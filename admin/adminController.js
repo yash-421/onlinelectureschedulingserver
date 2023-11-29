@@ -51,6 +51,13 @@ adminController.register = async (req, res) => {
   }
 };
 
+adminController.dashboard = async (req, res) => {
+  const instructors = (await Instructor.find({})).length;
+  const courses = (await Courses.find({})).length;
+
+  return res.status(200).json({ instructors: instructors, courses: courses });
+};
+
 adminController.login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -91,13 +98,12 @@ adminController.login = async (req, res) => {
           .json({ message: "Invalid password", success: false });
       }
 
-      return res
-        .status(200)
-        .json({
-          message: "Login successful",
-          success: true,
-          type: "instructor",
-        });
+      return res.status(200).json({
+        message: "Login successful",
+        success: true,
+        type: "instructor",
+        id:instructor._id
+      });
     }
 
     return res.status(500).json({ message: "Not found", success: false });
@@ -111,10 +117,10 @@ adminController.login = async (req, res) => {
 
 // Get all assigned courses
 adminController.getAllAssignCourses = (req, res) => {
-  const { email } = req.body;
+  const { instructor } = req.body;
   let data = {};
-  if (email) {
-    data["email"] = email;
+  if (instructor) {
+    data["instructor"] = new mongo.ObjectId(instructor);
   }
   assignCourses
     .find(data)
@@ -131,15 +137,17 @@ adminController.addInstructor = (req, res) => {
     const { email, password, name } = req.body;
 
     // Check if the email already exists
-    Instructor.findOne({ email }).then((existingInstructor) => {
+    Instructor.findOne({ email }).then(async (existingInstructor) => {
       if (existingInstructor) {
         return res.status(400).json({ message: "Email already exists" });
       }
 
+      let encryptedPassword = await bcrypt.hash(password, 12);
+
       // Create a new instructor
       const newInstructor = new Instructor({
         email,
-        password,
+        password: encryptedPassword,
         name,
       });
 
