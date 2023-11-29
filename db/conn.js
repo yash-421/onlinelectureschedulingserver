@@ -8,7 +8,7 @@ options = {
     family: 4
 };
 
-mongoose.connect(databaseUrl, options).then(() => {
+mongoose.connect(databaseUrl).then(() => {
     console.log('database connection successful')
 }).catch((err) => {
     console.log("no connection", err)
