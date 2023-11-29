@@ -12,7 +12,7 @@ const server = http.createServer(app);
 
 const corsOptions = {
   origin: '*',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200 
 }
 
 app.use(cors(corsOptions))
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use('/admin',admin)
 
 app.get('/', (req, res) => {
-  res.send('Welcome to ECORICH')
+  res.send('Welcome to Online')
 })
 
 app.use('/uploads',express.static('uploads'))
