@@ -2,7 +2,7 @@ const assignCourses = require("../modal/assignCourses");
 const Instructor = require("../modal/instructors"); // Import the instructor modal or replace it with the actual modal path
 const Courses = require("../modal/courses");
 const admins = require("./adminSchema");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const { mongo } = require("mongoose");
 const fs = require("fs");
 
@@ -24,7 +24,7 @@ adminController.register = async (req, res) => {
         .json({ message: "This email is already exist", success: false });
     }
 
-    let encryptedPassword = await bcrypt.hash(password, 12);
+    let encryptedPassword = await bcrypt.hash(password, 12); 
 
     admins
       .updateOne(
